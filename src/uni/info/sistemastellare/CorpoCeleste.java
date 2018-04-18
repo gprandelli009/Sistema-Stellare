@@ -12,8 +12,8 @@ public abstract class CorpoCeleste {
         this.id = id;
     }
 
-    public String toString(){
-        return "Pianeta "+ id + "/nNella posizione " + posizione.toString() + "/nDi massa " + massa;
+    public String stampa(){
+        return ("Corpo celeste "+ id + "\nNella posizione " + posizione.stampa() + "\nDi massa " + massa);
     }
 
 }

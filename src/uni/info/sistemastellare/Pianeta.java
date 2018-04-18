@@ -4,12 +4,17 @@ import java.util.ArrayList;
 
 public class Pianeta extends CorpoCeleste {
 
-    Stella stellaDiRotazione;
     ArrayList<Luna> lune = new ArrayList<Luna>();
 
-    public Pianeta(int x, int y, int massa, String id,Stella stellaDiRotazione){
+    public Pianeta(int x, int y, int massa, String id){
         super(x,y,massa,id);
-        this.stellaDiRotazione = stellaDiRotazione;
     }
 
+    public void aggiungiLuna(int x,int y, int massa, String id){
+        lune.add(new Luna(x,y,massa,id));
+    }
+
+    public String getId(){
+        return id;
+    }
 }

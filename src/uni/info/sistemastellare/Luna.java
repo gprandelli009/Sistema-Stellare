@@ -2,10 +2,11 @@ package uni.info.sistemastellare;
 
 public class Luna extends CorpoCeleste {
 
-    Pianeta pianetaDiRotazione;
-
-    public Luna(int x, int y, int massa, String id, Pianeta pianetaDiRotazione){
+    public Luna(int x, int y, int massa, String id){
         super(x,y,massa,id);
-        this.pianetaDiRotazione = pianetaDiRotazione;
+    }
+
+    public String getId(){
+        return id;
     }
 }

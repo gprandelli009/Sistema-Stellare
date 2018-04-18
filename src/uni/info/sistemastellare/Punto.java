@@ -9,8 +9,7 @@ public class Punto {
         this.y = y;
     }
 
-    @Override
-    public String toString(){
+    public String stampa(){
         return "("+x+","+y+")";
     }
 
