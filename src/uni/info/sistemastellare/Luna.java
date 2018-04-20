@@ -2,11 +2,11 @@ package uni.info.sistemastellare;
 
 public class Luna extends CorpoCeleste {
 
-    public Luna(int x, int y, int massa, String id){
-        super(x,y,massa,id);
-    }
+	public Luna(int x, int y, int massa, String id) {
+		super(x, y, massa, id);
+	}
 
-    public String getId(){
-        return id;
-    }
+	public String getId() {
+		return id;
+	}
 }
