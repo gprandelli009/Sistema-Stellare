@@ -1,10 +1,11 @@
 package uni.info.sistemastellare;
 
-import java.awt.desktop.SystemEventListener;
 import java.util.Scanner;
 
+// Delle funzionalità base manca il calcolo del centro di massa
+
 public class Sistema {
-	public enum TipiCorpiCelesti {PIANETA, LUNA, STELLA}
+
 
 	final static int MAX_PIANETI = 26600;
 	final static int MAX_LUNE_PIANETA = 5000;
@@ -210,6 +211,14 @@ public class Sistema {
 		menu.append(MENU_DELIMITATORE);
 
 		return menu;
+	}
+
+	//Metodi funzionalità extra, calcolo della rotta
+
+	public static String calcoloRotta(String idPartenza, String idArrivo){
+		TipiCorpiCelesti partenza,arrivo;
+
+
 	}
 
 }
