@@ -6,7 +6,7 @@ public class Stella {
 	static Punto posizione;
 	static int massa;
 	static String id;
-	static ArrayList<Pianeta> pianeti = new ArrayList<Pianeta>();
+	static ArrayList<Pianeta> pianeti = new ArrayList<>();
 
 	public static void riempi(int x, int y, int massa, String id) {
 		posizione = new Punto(x, y);

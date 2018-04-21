@@ -9,7 +9,7 @@ public class Punto {
 		this.y = y;
 	}
 
-	public String stampa() {
+	public String toString() {
 		return "(" + x + "," + y + ")";
 	}
 

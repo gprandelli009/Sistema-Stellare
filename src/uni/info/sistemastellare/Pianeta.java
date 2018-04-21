@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Pianeta extends CorpoCeleste {
 
-	ArrayList<Luna> lune = new ArrayList<Luna>();
+	ArrayList<Luna> lune = new ArrayList<>();
 
 	public Pianeta(int x, int y, int massa, String id) {
 		super(x, y, massa, id);
