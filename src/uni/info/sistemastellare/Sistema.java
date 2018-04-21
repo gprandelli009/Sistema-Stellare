@@ -60,6 +60,14 @@ public class Sistema {
 					id = sc.next();
 					informazioniLuna(id);
 					break;
+				case 7:
+					String idPartenza, idArrivo;
+					System.out.println("id partenza : ");
+					idPartenza = sc.next();
+					System.out.println("id arrivo : ");
+					idArrivo = sc.next();
+					calcoloRotta(idPartenza, idArrivo);
+					break;
 			}
 		} while (scelta != 0);
 
@@ -186,6 +194,7 @@ public class Sistema {
 		final String MENU_SCELTA_INDIVIDUA = "4 individua corpo celeste";
 		final String MENU_SCELTA_INFO_PIANETA = "5 informazioni pianeta";
 		final String MENU_SCELTA_INFO_LUNA = "6 informazioni luna";
+		final String MENU_SCELTA_ROTTA = "7 calcola rotta tra due corpi celesti";
 		final String MENU_BENVENUTO = "Scegli una delle opzioni sottostanti per continuare";
 
 		StringBuilder menu = new StringBuilder();
@@ -208,6 +217,8 @@ public class Sistema {
 		menu.append("\n");
 		menu.append(MENU_SCELTA_INFO_LUNA);
 		menu.append("\n");
+		menu.append(MENU_SCELTA_ROTTA);
+		menu.append("\n");
 		menu.append(MENU_DELIMITATORE);
 
 		return menu;
@@ -215,10 +226,11 @@ public class Sistema {
 
 	//Metodi funzionalità extra, calcolo della rotta
 
-	public static String calcoloRotta(String idPartenza, String idArrivo){
-		TipiCorpiCelesti partenza,arrivo;
-
-
+	public static void calcoloRotta(String idPartenza, String idArrivo) {
+		Rotta rotta = new Rotta(idPartenza, idArrivo);
+		System.out.println("La rotta da percorrere è : ");
+		System.out.println(rotta.calcolaRotta());
+		System.out.println(String.format("Distanza da percorrere : %.2f", rotta.getDistanzaPercorsa()));
 	}
 
 }

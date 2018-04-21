@@ -17,4 +17,5 @@ public class Pianeta extends CorpoCeleste {
 	public String getId() {
 		return id;
 	}
+
 }
