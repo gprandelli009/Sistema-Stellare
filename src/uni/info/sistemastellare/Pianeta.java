@@ -14,8 +14,4 @@ public class Pianeta extends CorpoCeleste {
 		lune.add(new Luna(x, y, massa, id));
 	}
 
-	public String getId() {
-		return id;
-	}
-
 }

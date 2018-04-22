@@ -18,4 +18,12 @@ public class Stella {
 		pianeti.add(new Pianeta(x, y, massa, id));
 	}
 
+	public static String getId() {
+		return id;
+	}
+
+	public static int getMassa() {
+
+		return massa;
+	}
 }

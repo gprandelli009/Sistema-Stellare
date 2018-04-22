@@ -2,11 +2,19 @@ package uni.info.sistemastellare;
 
 public class Punto {
 
-	private int x, y;
+	private double x, y;
 
-	public Punto(int x, int y) {
+	public Punto(double x, double y) {
 		this.x = x;
 		this.y = y;
+	}
+
+	public double getX() {
+		return x;
+	}
+
+	public double getY() {
+		return y;
 	}
 
 	public static double distanzaTraDuePunti(Punto p1, Punto p2) {
@@ -14,7 +22,7 @@ public class Punto {
 	}
 
 	public String toString() {
-		return "(" + x + "," + y + ")";
+		return String.format("(%f,%f)", x, y);
 	}
 
 }

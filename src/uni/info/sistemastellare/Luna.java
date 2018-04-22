@@ -6,7 +6,4 @@ public class Luna extends CorpoCeleste {
 		super(x, y, massa, id);
 	}
 
-	public String getId() {
-		return id;
-	}
 }

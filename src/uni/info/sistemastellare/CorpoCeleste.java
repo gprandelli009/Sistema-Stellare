@@ -12,6 +12,14 @@ public abstract class CorpoCeleste {
 		this.id = id;
 	}
 
+	public int getMassa() {
+		return massa;
+	}
+
+	public String getId() {
+		return id;
+	}
+
 	public String toString() {
 		return ("Corpo celeste " + id + "\nNella posizione " + posizione.toString() + "\nDi massa " + massa);
 	}

@@ -24,50 +24,44 @@ public class Sistema {
 
 		do {
 
-			System.out.println(menu);
+			scelta = IODati.leggiIntero(menu.toString(), 0, 8);
 
-			scelta = sc.nextInt();
 			String id;
 			switch (scelta) {
 				case 1:
 					if ((Stella.pianeti.size() < MAX_PIANETI)) {
 						aggiungiCorpoCeleste(TipiCorpiCelesti.PIANETA);
-						break;
 					} else {
 						System.out.println("Limite pianeti raggiunto");
-						break;
 					}
+					break;
 				case 2:
 					aggiungiCorpoCeleste(TipiCorpiCelesti.LUNA);
 					break;
 				case 3:
-					System.out.println("id corpo da rimuovere : ");
-					id = sc.next();
+					id = IODati.leggiStringa("id corpo da rimuovere : ");
 					rimuoviCorpoCeleste(id);
 					break;
 				case 4:
-					System.out.println("id corpo da individuare : ");
-					id = sc.next();
+					id = IODati.leggiStringa("id corpo da individuare : ");
 					individuaCorpoCeleste(id);
 					break;
 				case 5:
-					System.out.println("id pianeta: ");
-					id = sc.next();
+					id = IODati.leggiStringa("id pianeta: ");
 					informazioniPianeta(id);
 					break;
 				case 6:
-					System.out.println("id luna : ");
-					id = sc.next();
+					id = IODati.leggiStringa("id luna : ");
 					informazioniLuna(id);
 					break;
 				case 7:
 					String idPartenza, idArrivo;
-					System.out.println("id partenza : ");
-					idPartenza = sc.next();
-					System.out.println("id arrivo : ");
-					idArrivo = sc.next();
+					idPartenza = IODati.leggiStringa("id partenza : ");
+					idArrivo = IODati.leggiStringa("id arrivo : ");
 					calcoloRotta(idPartenza, idArrivo);
 					break;
+				case 8:
+					calcolaCentroMassa();
 			}
 		} while (scelta != 0);
 
@@ -76,16 +70,13 @@ public class Sistema {
 	public static void aggiungiCorpoCeleste(TipiCorpiCelesti tipo) {
 		int x, y, massa;
 		String id;
-		Scanner sc = new Scanner(System.in);
-
-		System.out.println("Inserisci coordinata x : ");
-		x = sc.nextInt();
-		System.out.println("Inserisci coordinata y : ");
-		y = sc.nextInt();
-		System.out.println("Inserisci coordinata massa : ");
-		massa = sc.nextInt();
-		System.out.println("Inserisci coordinata id : ");
-		id = sc.next();
+		//Controllo che il nome sia univoco
+		do {
+			id = IODati.leggiStringa("Inserisci id : ");
+		}while(isIdGiaUsato(id));
+		x = IODati.leggiIntero("Inserisci coordinata x : ");
+		y = IODati.leggiIntero("Inserisci coordinata y : ");
+		massa = IODati.leggiIntero("Inserisci massa : ");
 
 		switch (tipo)
 
@@ -95,8 +86,7 @@ public class Sistema {
 				break;
 			case LUNA:
 				String pianetaDiRotazione;
-				System.out.println("Inserisci coordinata pianeta di rotazione : ");
-				pianetaDiRotazione = sc.next();
+				pianetaDiRotazione = IODati.leggiStringa("Inserisci coordinata pianeta di rotazione : ");
 				int pianeta = cercaPianetaById(pianetaDiRotazione);
 				if (pianeta != -1) {
 					if (Stella.pianeti.get(pianeta).lune.size() < MAX_LUNE_PIANETA) {
@@ -112,6 +102,17 @@ public class Sistema {
 				Stella.riempi(x, y, massa, id);
 				break;
 		}
+	}
+
+	public static boolean isIdGiaUsato(String id) {
+		if(id.equals(Stella.getId())) return true;
+		for (Pianeta p : Stella.pianeti) {
+			for (Luna l : p.lune) {
+				if(l.getId().equals(id)) return true;
+			}
+			if(p.getId().equals(id)) return true;
+		}
+		return false;
 	}
 
 	public static int cercaPianetaById(String id) {
@@ -159,7 +160,9 @@ public class Sistema {
 		// se arriva qui è una luna o non esiste
 		int[] j = cercaLunaById(id);
 		if (j[0] != -1) {
-			System.out.println(Stella.pianeti.get(j[0]).lune.get(j[1]).toString() + "\nIl pianeta intorno a cui orbita è : \n" + Stella.pianeti.get(j[0]).toString());
+			System.out.println(Stella.pianeti.get(j[0]).lune.get(j[1]).toString() +
+					"\nIl pianeta intorno a cui orbita è : \n" +
+					Stella.pianeti.get(j[0]).toString());
 			return;
 		}
 
@@ -178,11 +181,39 @@ public class Sistema {
 	}
 
 	public static void informazioniLuna(String id) {
-		int[] j = cercaLunaById(id);
+		calcoloRotta(id);
+	}
 
-		if (j[0] != -1) {
-			System.out.println(Stella.id + " > " + Stella.pianeti.get(j[0]).getId() + " > " + Stella.pianeti.get(j[0]).lune.get(j[1]).getId());
-		} else System.out.println("Luna non trovata");
+	public static void calcolaCentroMassa() {
+		int sommaDelleMasse = 0, massaTemp;
+		double totx = 0, toty = 0;
+		Punto sommaPesataDellePosizioni;
+
+		//stella
+		massaTemp = Stella.getMassa();
+		sommaDelleMasse += massaTemp;
+		totx += Stella.posizione.getX() * massaTemp;
+		toty += Stella.posizione.getY() * massaTemp;
+
+		//pianeti e lune
+		for (Pianeta p : Stella.pianeti) {
+			for (Luna l : p.lune) {
+				massaTemp = l.getMassa();
+				sommaDelleMasse += massaTemp;
+				totx += l.posizione.getX() * massaTemp;
+				toty += l.posizione.getY() * massaTemp;
+			}
+			massaTemp = p.getMassa();
+			sommaDelleMasse += massaTemp;
+			totx += p.posizione.getX() * massaTemp;
+			toty += p.posizione.getY() * massaTemp;
+		}
+
+		sommaPesataDellePosizioni = new Punto(totx / sommaDelleMasse, toty / sommaDelleMasse);
+		String output = String.format("Il centro di massa del sistema e' (%f.3,%f.3) ",
+				sommaPesataDellePosizioni.getX(), sommaPesataDellePosizioni.getY());
+
+		System.out.println(output);
 	}
 
 	public static StringBuilder creaMenu() {
@@ -195,6 +226,7 @@ public class Sistema {
 		final String MENU_SCELTA_INFO_PIANETA = "5 informazioni pianeta";
 		final String MENU_SCELTA_INFO_LUNA = "6 informazioni luna";
 		final String MENU_SCELTA_ROTTA = "7 calcola rotta tra due corpi celesti";
+		final String MENU_CENTRO_MASSA = "8 calcola il centro di massa";
 		final String MENU_BENVENUTO = "Scegli una delle opzioni sottostanti per continuare";
 
 		StringBuilder menu = new StringBuilder();
@@ -219,6 +251,8 @@ public class Sistema {
 		menu.append("\n");
 		menu.append(MENU_SCELTA_ROTTA);
 		menu.append("\n");
+		menu.append(MENU_CENTRO_MASSA);
+		menu.append("\n");
 		menu.append(MENU_DELIMITATORE);
 
 		return menu;
@@ -227,10 +261,25 @@ public class Sistema {
 	//Metodi funzionalità extra, calcolo della rotta
 
 	public static void calcoloRotta(String idPartenza, String idArrivo) {
-		Rotta rotta = new Rotta(idPartenza, idArrivo);
-		System.out.println("La rotta da percorrere è : ");
-		System.out.println(rotta.calcolaRotta());
-		System.out.println(String.format("Distanza da percorrere : %.2f", rotta.getDistanzaPercorsa()));
+		try {
+			Rotta rotta = new Rotta(idPartenza, idArrivo);
+			System.out.println("La rotta da percorrere è : ");
+			System.out.println(rotta.calcolaRotta());
+			System.out.println(String.format("Distanza da percorrere : %.2f", rotta.getDistanzaPercorsa()));
+		} catch (IllegalArgumentException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+
+	//lo uso per identificare il percorso stella-luna richiesto
+	public static void calcoloRotta(String idLuna) {
+		try {
+			Rotta rotta = new Rotta(Stella.getId(), idLuna);
+			System.out.println("Il percorso e` : ");
+			System.out.println(rotta.calcolaRotta());
+		} catch (IllegalArgumentException e) {
+			System.out.println(e.getMessage());
+		}
 	}
 
 }

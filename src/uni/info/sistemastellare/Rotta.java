@@ -1,82 +1,120 @@
 package uni.info.sistemastellare;
 
 public class Rotta {
-	private String idPartenza, idArrivo;
-	private TipiCorpiCelesti tipoPartenza, tipoArrivo,tipoCorrente;
+	final private static String ERRORE_ROTTA = "Rotta non valida";
+	private String idPartenza, idArrivo, idCorrente;
+	private TipiCorpiCelesti tipoCorrente;
 	private int[] posPartenza = new int[2];
 	private int[] posArrivo = new int[2];
-	private boolean nonPresente = false;
 	private double distanzaPercorsa = 0;
+	boolean metaSuperata = false;
 
 	public Rotta(String idPartenza, String idArrivo) {
 		this.idPartenza = idPartenza;
 		this.idArrivo = idArrivo;
+		idCorrente = idPartenza;
+		tipoCorrente = identificaTipo(idPartenza, posPartenza);
+		identificaTipo(idArrivo, posArrivo); //Devo riempire l`array e controllare che
+											//il pianeta di arrivo esista
 	}
 
 	public StringBuilder calcolaRotta() {
-		tipoPartenza = identificaTipo(idPartenza, posPartenza);
-		tipoArrivo = identificaTipo(idArrivo, posArrivo);
-		tipoCorrente = tipoPartenza;
 		StringBuilder percorso = new StringBuilder();
 
-		boolean finito = false, metaSuperta = false,thereIsPrecedente = false;
+		percorso.append(idPartenza);
+		percorso.append(">");
 
-		do {
-			if (metaSuperta) { //Seconda metà (dalla stella all'arrivo)
-				if (tipoCorrente == TipiCorpiCelesti.PIANETA) {
-					Punto p1,p2;
-					p1 = Stella.pianeti.get(posArrivo[0]).posizione;
-					p2 = Stella.posizione;
-					distanzaPercorsa += Punto.distanzaTraDuePunti(p1, p2);
-					percorso.append(Stella.pianeti.get(posArrivo[0]).getId());
-					if (tipoCorrente == tipoArrivo) finito = true;
-					else {
-						percorso.append(" > ");
-						tipoCorrente = TipiCorpiCelesti.LUNA;
-					}
-				} else {
-					Punto p1,p2;
-					p1 = Stella.pianeti.get(posArrivo[0]).lune.get(posArrivo[1]).posizione;
-					p2 = Stella.pianeti.get(posArrivo[0]).posizione;
-					distanzaPercorsa += Punto.distanzaTraDuePunti(p1, p2);
-					percorso.append(Stella.pianeti.get(posArrivo[0]).lune.get(posArrivo[1]).getId());
-					finito = true;
-				}
-			} else { //Prima metà (considero prima metà il percorso dal corpo celeste alla stella)
-				if (tipoCorrente == TipiCorpiCelesti.STELLA) {
-					if (thereIsPrecedente) { //Controllo se questo è il pianeta di partenza, lo faccio solo nella prima metà
-						Punto p1,p2;
-						p1 = Stella.pianeti.get(posPartenza[0]).posizione;
-						p2 = Stella.posizione;
-						distanzaPercorsa += Punto.distanzaTraDuePunti(p1, p2);
-					}
-					percorso.append(Stella.id);
-					percorso.append(" > ");
-					metaSuperta = true;
-					tipoCorrente = TipiCorpiCelesti.PIANETA;
-				} else if (tipoCorrente == TipiCorpiCelesti.PIANETA) {
-					if(thereIsPrecedente){
-						Punto p1,p2;
-						p1 = Stella.pianeti.get(posPartenza[0]).lune.get(posPartenza[1]).posizione;
-						p2 = Stella.pianeti.get(posPartenza[0]).posizione;
-						distanzaPercorsa += Punto.distanzaTraDuePunti(p1, p2);
-					}
-					percorso.append(Stella.pianeti.get(posPartenza[0]).getId());
-					percorso.append(" > ");
-					thereIsPrecedente = true;
-					tipoCorrente = TipiCorpiCelesti.STELLA;
-				} else if (tipoCorrente == TipiCorpiCelesti.LUNA) {
-					percorso.append(Stella.pianeti.get(posPartenza[0]).lune.get(posPartenza[1]).getId());
-					percorso.append(" > ");
-					thereIsPrecedente = true;
-					tipoCorrente = TipiCorpiCelesti.PIANETA;
-				}
+		if (tipoCorrente == TipiCorpiCelesti.STELLA) metaSuperata = true;
+		prossimoSalto();
+
+		while (!idCorrente.equals(idArrivo)) {
+			switch (tipoCorrente) {
+				case STELLA:
+					calcolaSalto();
+					idCorrente = Stella.id;
+					percorso.append(idCorrente);
+					percorso.append(">");
+					metaSuperata = true;
+					prossimoSalto();
+					break;
+
+				case PIANETA:
+					calcolaSalto();
+					idCorrente = metaSuperata ?
+							Stella.pianeti.get(posArrivo[0]).getId() :
+							Stella.pianeti.get(posPartenza[0]).getId();
+					percorso.append(idCorrente);
+					percorso.append(">");
+					prossimoSalto();
+					break;
+
+				case LUNA:
+					calcolaSalto();
+					idCorrente = metaSuperata ?
+							Stella.pianeti.get(posArrivo[0]).lune.get(posArrivo[1]).getId() :
+							Stella.pianeti.get(posPartenza[0]).lune.get(posPartenza[1]).getId();
+					percorso.append(idCorrente);
+					percorso.append(">");
+					prossimoSalto();
+					break;
 			}
-		} while (!finito);
+
+		}
+		percorso = percorso.deleteCharAt(percorso.length() - 1);  //Rimuovo l'ultimo carattere che corrisponde a '>'
 		return percorso;
 	}
 
-	public TipiCorpiCelesti identificaTipo(String id, int[] posizione) {
+	public void prossimoSalto() {
+
+		switch (tipoCorrente) {
+			case STELLA:
+				tipoCorrente = TipiCorpiCelesti.PIANETA;
+				break;
+
+			case PIANETA:
+				if (metaSuperata) tipoCorrente = TipiCorpiCelesti.LUNA;
+				else tipoCorrente = TipiCorpiCelesti.STELLA;
+				break;
+
+			case LUNA:
+				tipoCorrente = TipiCorpiCelesti.PIANETA;
+				break;
+		}
+	}
+
+	public void calcolaSalto() {
+		Punto p1, p2;
+		switch (tipoCorrente) {
+			case STELLA:
+				if (metaSuperata) {
+					p1 = Stella.pianeti.get(posArrivo[0]).posizione;
+					p2 = Stella.posizione;
+				} else {
+					p1 = Stella.pianeti.get(posPartenza[0]).posizione;
+					p2 = Stella.posizione;
+				}
+				distanzaPercorsa += Punto.distanzaTraDuePunti(p1, p2);
+				break;
+			case PIANETA:
+				if (metaSuperata) {
+					p1 = Stella.pianeti.get(posArrivo[0]).posizione;
+					p2 = Stella.posizione;
+				} else {
+					p1 = Stella.pianeti.get(posPartenza[0]).lune.get(posPartenza[1]).posizione;
+					p2 = Stella.pianeti.get(posPartenza[0]).posizione;
+				}
+				distanzaPercorsa += Punto.distanzaTraDuePunti(p1, p2);
+				break;
+			case LUNA:
+				p1 = Stella.pianeti.get(posArrivo[0]).lune.get(posArrivo[1]).posizione;
+				p2 = Stella.pianeti.get(posArrivo[0]).posizione;
+				distanzaPercorsa += Punto.distanzaTraDuePunti(p1, p2);
+				break;
+		}
+
+	}
+
+	public TipiCorpiCelesti identificaTipo(String id, int[] posizione) throws IllegalArgumentException {
 		//Controllo se è la stella
 		if (id.equals(Stella.id)) return TipiCorpiCelesti.STELLA;
 
@@ -95,9 +133,7 @@ public class Rotta {
 			return TipiCorpiCelesti.LUNA;
 		}
 
-		//Non è presente nel sistema (controllo temporaneo, da cambiare)
-		nonPresente = true;
-		return TipiCorpiCelesti.STELLA;
+		throw new IllegalArgumentException(ERRORE_ROTTA);
 	}
 
 	public double getDistanzaPercorsa() {
