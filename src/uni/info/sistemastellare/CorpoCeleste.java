@@ -23,5 +23,4 @@ public abstract class CorpoCeleste {
 	public String toString() {
 		return ("Corpo celeste " + id + "\nNella posizione " + posizione.toString() + "\nDi massa " + massa);
 	}
-
 }

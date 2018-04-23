@@ -16,15 +16,13 @@ public class Sistema {
 		System.out.println("Creazione stella sistema");
 		aggiungiCorpoCeleste(TipiCorpiCelesti.STELLA); //Viene subito creata una stella perchè pilastro del sistema
 
-		StringBuilder menu = creaMenu();
-
-		Scanner sc = new Scanner(System.in);
+		String menu = creaMenu();
 
 		int scelta;
 
 		do {
 
-			scelta = IODati.leggiIntero(menu.toString(), 0, 8);
+			scelta = IODati.leggiIntero(menu, 0, 8);
 
 			String id;
 			switch (scelta) {
@@ -216,7 +214,7 @@ public class Sistema {
 		System.out.println(output);
 	}
 
-	public static StringBuilder creaMenu() {
+	public static String creaMenu() {
 		final String MENU_DELIMITATORE = "-------------------------------------------------";
 		final String MENU_SCELTA_ESCI = "0 per uscire dal programma";
 		final String MENU_SCELTA_AGGIUNGI_PIANETA = "1 aggiungi pianeta";
@@ -255,7 +253,7 @@ public class Sistema {
 		menu.append("\n");
 		menu.append(MENU_DELIMITATORE);
 
-		return menu;
+		return menu.toString();
 	}
 
 	//Metodi funzionalità extra, calcolo della rotta

@@ -7,7 +7,7 @@ public class Rotta {
 	private int[] posPartenza = new int[2];
 	private int[] posArrivo = new int[2];
 	private double distanzaPercorsa = 0;
-	boolean metaSuperata = false;
+	boolean metaSuperata = false; //nel senso di meta` del percorso, non arrivo
 
 	public Rotta(String idPartenza, String idArrivo) {
 		this.idPartenza = idPartenza;
@@ -18,7 +18,7 @@ public class Rotta {
 											//il pianeta di arrivo esista
 	}
 
-	public StringBuilder calcolaRotta() {
+	public String calcolaRotta() {
 		StringBuilder percorso = new StringBuilder();
 
 		percorso.append(idPartenza);
@@ -61,10 +61,10 @@ public class Rotta {
 
 		}
 		percorso = percorso.deleteCharAt(percorso.length() - 1);  //Rimuovo l'ultimo carattere che corrisponde a '>'
-		return percorso;
+		return percorso.toString();
 	}
 
-	public void prossimoSalto() {
+	private void prossimoSalto() {
 
 		switch (tipoCorrente) {
 			case STELLA:
@@ -82,7 +82,7 @@ public class Rotta {
 		}
 	}
 
-	public void calcolaSalto() {
+	private void calcolaSalto() {
 		Punto p1, p2;
 		switch (tipoCorrente) {
 			case STELLA:
@@ -114,14 +114,14 @@ public class Rotta {
 
 	}
 
-	public TipiCorpiCelesti identificaTipo(String id, int[] posizione) throws IllegalArgumentException {
+	private TipiCorpiCelesti identificaTipo(String id, int[] posizione) throws IllegalArgumentException {
 		//Controllo se è la stella
 		if (id.equals(Stella.id)) return TipiCorpiCelesti.STELLA;
 
 		//Controllo se è un pianeta
 		int i;
 		if ((i = Sistema.cercaPianetaById(id)) != -1) {
-			posizione[0] = i;
+			posizione[0] = i; //memorizzo la posizione
 			return TipiCorpiCelesti.PIANETA;
 		}
 
