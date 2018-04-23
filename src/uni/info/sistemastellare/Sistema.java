@@ -1,9 +1,5 @@
 package uni.info.sistemastellare;
 
-import java.util.Scanner;
-
-// Delle funzionalità base manca il calcolo del centro di massa
-
 public class Sistema {
 
 
@@ -27,6 +23,7 @@ public class Sistema {
 			String id;
 			switch (scelta) {
 				case 1:
+					//Controlla che non sia stato raggiunto il massimo di pianeti per questo sistema
 					if ((Stella.pianeti.size() < MAX_PIANETI)) {
 						aggiungiCorpoCeleste(TipiCorpiCelesti.PIANETA);
 					} else {
@@ -68,7 +65,7 @@ public class Sistema {
 	public static void aggiungiCorpoCeleste(TipiCorpiCelesti tipo) {
 		int x, y, massa;
 		String id;
-		//Controllo che il nome sia univoco
+		//Controllo che il nome non sia gia` usato
 		do {
 			id = IODati.leggiStringa("Inserisci id : ");
 		}while(isIdGiaUsato(id));
@@ -77,14 +74,14 @@ public class Sistema {
 		massa = IODati.leggiIntero("Inserisci massa : ");
 
 		switch (tipo)
-
 		{
 			case PIANETA:
 				Stella.aggiungiPianeta(x, y, massa, id);
 				break;
 			case LUNA:
 				String pianetaDiRotazione;
-				pianetaDiRotazione = IODati.leggiStringa("Inserisci coordinata pianeta di rotazione : ");
+				pianetaDiRotazione = IODati.leggiStringa("Inserisci id pianeta di rotazione : ");
+				//Controllo se il pianeta esiste e memorizzo l'indice
 				int pianeta = cercaPianetaById(pianetaDiRotazione);
 				if (pianeta != -1) {
 					if (Stella.pianeti.get(pianeta).lune.size() < MAX_LUNE_PIANETA) {

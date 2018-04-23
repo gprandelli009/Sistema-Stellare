@@ -7,7 +7,7 @@ public class Rotta {
 	private int[] posPartenza = new int[2];
 	private int[] posArrivo = new int[2];
 	private double distanzaPercorsa = 0;
-	boolean metaSuperata = false; //nel senso di meta` del percorso, non arrivo
+	boolean metaSuperata = false; //nel senso di meta` del percorso, non meta/arrivo
 
 	public Rotta(String idPartenza, String idArrivo) {
 		this.idPartenza = idPartenza;
@@ -25,12 +25,12 @@ public class Rotta {
 		percorso.append(">");
 
 		if (tipoCorrente == TipiCorpiCelesti.STELLA) metaSuperata = true;
-		prossimoSalto();
+		prossimoSalto(); //Controllo quale dovra` essere il prossimo corpo celeste da raggiungere (next hop)
 
 		while (!idCorrente.equals(idArrivo)) {
 			switch (tipoCorrente) {
 				case STELLA:
-					calcolaSalto();
+					calcolaSalto();	//Calcolo quanta strada ho percorso con l'ultimo salto effettuato
 					idCorrente = Stella.id;
 					percorso.append(idCorrente);
 					percorso.append(">");
@@ -65,7 +65,7 @@ public class Rotta {
 	}
 
 	private void prossimoSalto() {
-
+		//Durante la prima meta` dovro` risalire 'l'albero' fino alla stella, dopo invece dovro` scendere
 		switch (tipoCorrente) {
 			case STELLA:
 				tipoCorrente = TipiCorpiCelesti.PIANETA;
